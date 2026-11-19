@@ -40,35 +40,35 @@ export default function StoryView() {
       )}
 
       {/* Cartão Principal da Narrativa */}
-      <div className="bg-stone-900/90 border border-stone-800 rounded-xl p-6 md:p-8 shadow-xl space-y-6">
+      <div className="bg-stone-900/90 border border-stone-800 rounded-xl p-4 sm:p-6 md:p-8 shadow-xl space-y-5 sm:space-y-6">
         {/* Cabeçalho da Cena & Região */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-stone-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-800">
           <div>
-            <span className="text-xs uppercase tracking-widest text-amber-400 font-semibold">
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-semibold">
               {currentScene.chapter}
             </span>
-            <h1 className="text-2xl md:text-3xl font-bold text-stone-100 mt-1">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-stone-100 mt-0.5">
               {currentScene.title}
             </h1>
           </div>
 
-          <div className="flex items-center gap-2 text-xs bg-stone-950 border border-stone-800 px-3 py-1.5 rounded-lg">
-            <Compass className="w-4 h-4 text-amber-400" />
+          <div className="flex items-center gap-2 text-xs bg-stone-950 border border-stone-800 px-3 py-1.5 rounded-lg shrink-0 self-start sm:self-auto">
+            <Compass className="w-4 h-4 text-amber-400 shrink-0" />
             <div>
               <div className="font-semibold text-stone-200">
                 {regionInfo.name}
               </div>
-              <div className="text-[11px] text-stone-400">
-                Batalha Aleatória: {regionInfo.dangerLabel}
+              <div className="text-[10px] sm:text-[11px] text-stone-400">
+                Batalha: {regionInfo.dangerLabel}
               </div>
             </div>
           </div>
         </div>
 
         {/* Texto da História */}
-        <div className="space-y-4 text-stone-200 leading-relaxed text-base md:text-[17px]">
+        <div className="space-y-3 sm:space-y-4 text-stone-200 leading-relaxed text-sm sm:text-base md:text-[17px]">
           {currentScene.paragraphs.map((p, idx) => (
-            <p key={idx} className="first-letter:text-2xl first-letter:font-serif first-letter:text-amber-400 first-letter:mr-0.5">
+            <p key={idx} className="first-letter:text-xl sm:first-letter:text-2xl first-letter:font-serif first-letter:text-amber-400 first-letter:mr-0.5">
               {p}
             </p>
           ))}
@@ -76,22 +76,22 @@ export default function StoryView() {
 
         {/* Escolhas de Ação */}
         <div className="pt-4 border-t border-stone-800 space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-xs uppercase tracking-widest text-stone-400 font-semibold font-sans">
               Escolha sua próxima ação
             </h3>
             <button
               type="button"
               onClick={triggerQuickHunt}
-              className="text-xs px-3 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/50 text-red-300 border border-red-800/50 flex items-center gap-1.5 transition"
+              className="text-[11px] sm:text-xs px-2.5 sm:px-3 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/50 text-red-300 border border-red-800/50 flex items-center gap-1.5 transition active:scale-95"
               title="Procurar inimigos nos arredores para ganhar XP e Ouro"
             >
               <Swords className="w-3.5 h-3.5" />
-              Caçar Monstros (Batalha Aleatória)
+              <span>Caçar Monstros</span>
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {currentScene.choices.map((choice) => {
               const hasStatCheck = Boolean(choice.statCheck);
               const statVal = hasStatCheck
@@ -111,21 +111,21 @@ export default function StoryView() {
                   key={choice.id}
                   type="button"
                   onClick={() => chooseStoryAction(choice)}
-                  className={`w-full text-left p-4 rounded-xl border transition-all group flex items-center justify-between gap-4 ${
+                  className={`w-full text-left p-3.5 sm:p-4 rounded-xl border transition-all active:scale-[0.99] group flex items-center justify-between gap-3 ${
                     choice.forceBoss
                       ? 'bg-red-950/25 hover:bg-red-950/40 border-red-800/60 hover:border-red-500'
                       : 'bg-stone-950/70 hover:bg-stone-800/70 border-stone-800 hover:border-amber-500/60'
                   }`}
                 >
-                  <div className="space-y-1">
-                    <div className="font-semibold text-stone-100 group-hover:text-amber-300 transition flex flex-wrap items-center gap-2">
+                  <div className="space-y-1 min-w-0">
+                    <div className="font-semibold text-stone-100 group-hover:text-amber-300 transition text-sm sm:text-base flex flex-wrap items-center gap-2">
                       {choice.forceBoss && (
                         <Skull className="w-4 h-4 text-red-400 shrink-0" />
                       )}
                       <span>{choice.label}</span>
                       {hasStatCheck && (
                         <span
-                          className={`text-[11px] px-2 py-0.5 rounded font-semibold ${
+                          className={`text-[10px] sm:text-[11px] px-2 py-0.5 rounded font-semibold ${
                             meetsStat
                               ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                               : 'bg-red-500/20 text-red-300 border border-red-500/30'
@@ -138,10 +138,10 @@ export default function StoryView() {
                     </div>
 
                     {choice.hint && (
-                      <p className="text-xs text-stone-400">{choice.hint}</p>
+                      <p className="text-[11px] sm:text-xs text-stone-400 leading-snug">{choice.hint}</p>
                     )}
 
-                    <div className="flex items-center gap-3 pt-1 text-[11px] text-stone-500">
+                    <div className="flex items-center gap-3 pt-0.5 text-[10px] sm:text-[11px] text-stone-500">
                       {choice.forceBoss ? (
                         <span className="text-red-400 font-medium flex items-center gap-1">
                           <AlertTriangle className="w-3 h-3" />

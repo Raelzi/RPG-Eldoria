@@ -23,6 +23,7 @@ export default function PlayerSidebar() {
   const resetGame = useGameStore((s) => s.resetGame);
 
   const [activeTab, setActiveTab] = useState('stats'); // 'stats' | 'bag' | 'journal'
+  const [mobileExpanded, setMobileExpanded] = useState(false);
 
   if (!player) return null;
   const eff = getEffectiveStats();
@@ -35,25 +36,25 @@ export default function PlayerSidebar() {
   );
 
   return (
-    <aside className="bg-stone-900/90 border border-stone-800 rounded-xl p-5 shadow-xl flex flex-col gap-4">
+    <aside className="bg-stone-900/90 border border-stone-800 rounded-xl p-4 sm:p-5 shadow-xl flex flex-col gap-3.5 sm:gap-4">
       {/* Identificação e Nível */}
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <h2 className="text-xl font-bold text-stone-100 leading-tight">
+        <div className="min-w-0">
+          <h2 className="text-lg sm:text-xl font-bold text-stone-100 leading-tight truncate">
             {player.name}
           </h2>
-          <p className="text-xs text-amber-400 font-medium mt-0.5">
+          <p className="text-[11px] sm:text-xs text-amber-400 font-medium mt-0.5 truncate">
             {player.classInfo.name} • Nível {player.level}
           </p>
         </div>
-        <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/25 px-2.5 py-1 rounded-lg text-amber-300 text-xs font-bold">
+        <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/25 px-2.5 py-1 rounded-lg text-amber-300 text-xs font-bold shrink-0">
           <Coins className="w-3.5 h-3.5" />
           <span>{player.gold}</span>
         </div>
       </div>
 
       {/* Barras de HP, MP e XP */}
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {/* HP */}
         <div>
           <div className="flex justify-between text-xs mb-1">
@@ -66,7 +67,7 @@ export default function PlayerSidebar() {
                 </span>
               )}
             </span>
-            <span className="text-stone-200 font-semibold">
+            <span className="text-stone-200 font-semibold text-xs">
               {player.hp} / {eff.maxHp}
             </span>
           </div>
@@ -85,7 +86,7 @@ export default function PlayerSidebar() {
               <Droplets className="w-3.5 h-3.5 fill-blue-500/40 text-blue-400" />
               Mana
             </span>
-            <span className="text-stone-200 font-semibold">
+            <span className="text-stone-200 font-semibold text-xs">
               {player.mp} / {eff.maxMp}
             </span>
           </div>
@@ -99,7 +100,7 @@ export default function PlayerSidebar() {
 
         {/* XP */}
         <div>
-          <div className="flex justify-between text-[11px] text-stone-400 mb-1">
+          <div className="flex justify-between text-[10px] sm:text-[11px] text-stone-400 mb-1">
             <span>Experiência (XP)</span>
             <span>
               {player.xp} / {player.xpToNext}
@@ -114,45 +115,58 @@ export default function PlayerSidebar() {
         </div>
       </div>
 
-      {/* Navegação de Abas */}
-      <div className="grid grid-cols-3 gap-1 bg-stone-950 p-1 rounded-lg border border-stone-800 text-xs">
+      {/* Botão de Toggle em Telas Pequenas */}
+      <div className="lg:hidden pt-1">
         <button
           type="button"
-          onClick={() => setActiveTab('stats')}
-          className={`py-1.5 rounded-md font-medium flex items-center justify-center gap-1 transition ${
-            activeTab === 'stats'
-              ? 'bg-stone-800 text-amber-300'
-              : 'text-stone-400 hover:text-stone-200'
-          }`}
+          onClick={() => setMobileExpanded(!mobileExpanded)}
+          className="w-full py-1.5 px-3 rounded-lg bg-stone-800/80 hover:bg-stone-700 text-stone-300 text-xs font-medium flex items-center justify-center gap-1.5 transition"
         >
-          <Sword className="w-3.5 h-3.5" />
-          Ficha
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('bag')}
-          className={`py-1.5 rounded-md font-medium flex items-center justify-center gap-1 transition ${
-            activeTab === 'bag'
-              ? 'bg-stone-800 text-amber-300'
-              : 'text-stone-400 hover:text-stone-200'
-          }`}
-        >
-          <Backpack className="w-3.5 h-3.5" />
-          Mochila
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('journal')}
-          className={`py-1.5 rounded-md font-medium flex items-center justify-center gap-1 transition ${
-            activeTab === 'journal'
-              ? 'bg-stone-800 text-amber-300'
-              : 'text-stone-400 hover:text-stone-200'
-          }`}
-        >
-          <BookOpen className="w-3.5 h-3.5" />
-          Crônica
+          <span>{mobileExpanded ? 'Ocultar Detalhes do Herói' : 'Ver Ficha, Mochila e Diário'}</span>
         </button>
       </div>
+
+      {/* Painel Expansível no Mobile / Sempre Visível no Desktop */}
+      <div className={`space-y-3.5 ${mobileExpanded ? 'block' : 'hidden lg:block'}`}>
+        {/* Navegação de Abas */}
+        <div className="grid grid-cols-3 gap-1 bg-stone-950 p-1 rounded-lg border border-stone-800 text-xs">
+          <button
+            type="button"
+            onClick={() => setActiveTab('stats')}
+            className={`py-1.5 rounded-md font-medium flex items-center justify-center gap-1 transition ${
+              activeTab === 'stats'
+                ? 'bg-stone-800 text-amber-300'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <Sword className="w-3.5 h-3.5" />
+            Ficha
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('bag')}
+            className={`py-1.5 rounded-md font-medium flex items-center justify-center gap-1 transition ${
+              activeTab === 'bag'
+                ? 'bg-stone-800 text-amber-300'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <Backpack className="w-3.5 h-3.5" />
+            Mochila
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('journal')}
+            className={`py-1.5 rounded-md font-medium flex items-center justify-center gap-1 transition ${
+              activeTab === 'journal'
+                ? 'bg-stone-800 text-amber-300'
+                : 'text-stone-400 hover:text-stone-200'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            Crônica
+          </button>
+        </div>
 
       {/* Conteúdo da Aba */}
       {activeTab === 'stats' && (
@@ -320,6 +334,7 @@ export default function PlayerSidebar() {
           <RotateCcw className="w-3.5 h-3.5" />
           Novo Herói
         </button>
+      </div>
       </div>
     </aside>
   );

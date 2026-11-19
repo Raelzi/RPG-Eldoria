@@ -99,25 +99,25 @@ export default function CharacterCreation() {
   const canStart = name.trim().length > 0 && selectedSkills.length === 1;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8 animate-fade-in">
       {/* Cabeçalho */}
-      <div className="text-center mb-8">
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-3">
+      <div className="text-center mb-6 sm:mb-8">
+        <span className="inline-block px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2 sm:mb-3">
           RPG Interativo em JavaScript
         </span>
-        <h1 className="text-3xl md:text-5xl font-bold text-stone-100 tracking-wide">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-stone-100 tracking-wide">
           Crônicas de <span className="text-amber-400">Eldoria</span>
         </h1>
-        <p className="text-stone-400 mt-2 max-w-2xl mx-auto text-sm md:text-base">
+        <p className="text-stone-400 mt-2 max-w-2xl mx-auto text-xs sm:text-sm md:text-base px-2">
           Forje seu herói escolhendo sua classe, arma inicial e uma habilidade de combate. Cada decisão moldará sua história — e cada estrada esconde batalhas inesperadas.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
         {/* Coluna Esquerda / Principal: Escolhas */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* 1. Nome do Personagem */}
-          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-5 shadow-lg">
+          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-4 sm:p-5 shadow-lg">
             <label className="block text-xs uppercase tracking-wider text-amber-400 font-semibold mb-2">
               1. Nome do Personagem
             </label>
@@ -128,28 +128,28 @@ export default function CharacterCreation() {
                 maxLength={32}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Digite o nome do seu herói..."
-                className="flex-1 bg-stone-950 border border-stone-700 focus:border-amber-500 rounded-lg px-4 py-2.5 text-stone-100 outline-none transition"
+                className="flex-1 bg-stone-950 border border-stone-700 focus:border-amber-500 rounded-lg px-3.5 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-stone-100 outline-none transition"
               />
               <button
                 type="button"
                 onClick={randomizeName}
-                className="px-3.5 py-2.5 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-lg border border-stone-700 flex items-center gap-2 text-sm transition"
+                className="px-3 sm:px-3.5 py-2 sm:py-2.5 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-lg border border-stone-700 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm transition shrink-0"
                 title="Sortear nome"
               >
                 <Dices className="w-4 h-4 text-amber-400" />
-                <span className="hidden sm:inline">Sortear</span>
+                <span>Sortear</span>
               </button>
             </div>
           </section>
 
           {/* 2. Escolha da Classe */}
-          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-5 shadow-lg">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm uppercase tracking-wider text-amber-400 font-semibold font-sans">
+          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-4 sm:p-5 shadow-lg">
+            <div className="flex flex-wrap items-center justify-between gap-1 mb-3">
+              <h2 className="text-xs sm:text-sm uppercase tracking-wider text-amber-400 font-semibold font-sans">
                 2. Escolha sua Classe
               </h2>
-              <span className="text-xs text-stone-400">
-                Define atributos base e habilidade passiva
+              <span className="text-[11px] text-stone-400">
+                Define atributos e passiva
               </span>
             </div>
 
@@ -163,7 +163,7 @@ export default function CharacterCreation() {
                     key={cls.id}
                     type="button"
                     onClick={() => handleSelectClass(cls)}
-                    className={`text-left p-4 rounded-xl border transition-all ${
+                    className={`text-left p-3.5 sm:p-4 rounded-xl border transition-all active:scale-[0.99] ${
                       isSelected
                         ? 'bg-amber-500/10 border-amber-500 shadow-md shadow-amber-950/30'
                         : 'bg-stone-950/60 border-stone-800 hover:border-stone-600'
@@ -172,33 +172,33 @@ export default function CharacterCreation() {
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2.5">
                         <div
-                          className={`p-2 rounded-lg ${
+                          className={`p-2 rounded-lg shrink-0 ${
                             isSelected
                               ? 'bg-amber-500/20 text-amber-300'
                               : 'bg-stone-800 text-stone-400'
                           }`}
                         >
-                          <IconComp className="w-5 h-5" />
+                          <IconComp className="w-4 sm:w-5 h-4 sm:h-5" />
                         </div>
                         <div>
-                          <h3 className="font-bold text-stone-100 text-base">
+                          <h3 className="font-bold text-stone-100 text-sm sm:text-base leading-snug">
                             {cls.name}
                           </h3>
-                          <p className="text-xs text-amber-400/90">
+                          <p className="text-[11px] sm:text-xs text-amber-400/90 line-clamp-1">
                             {cls.tagline}
                           </p>
                         </div>
                       </div>
                       {isSelected && (
-                        <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
+                        <CheckCircle2 className="w-4 sm:w-5 h-4 sm:h-5 text-amber-400 shrink-0 mt-0.5" />
                       )}
                     </div>
-                    <p className="text-xs text-stone-400 mt-2.5 leading-relaxed">
+                    <p className="text-[11px] sm:text-xs text-stone-400 mt-2 leading-relaxed">
                       {cls.description}
                     </p>
-                    <div className="mt-3 pt-2.5 border-t border-stone-800/80 text-xs text-stone-300">
+                    <div className="mt-2.5 pt-2 border-t border-stone-800/80 text-[11px] text-stone-300">
                       <span className="text-amber-300 font-medium">
-                        Passiva — {cls.passive.name}:
+                        Passiva:
                       </span>{' '}
                       {cls.passive.description}
                     </div>
@@ -209,13 +209,13 @@ export default function CharacterCreation() {
           </section>
 
           {/* 3. Escolha da Arma Inicial */}
-          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-5 shadow-lg">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm uppercase tracking-wider text-amber-400 font-semibold font-sans">
+          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-4 sm:p-5 shadow-lg">
+            <div className="flex flex-wrap items-center justify-between gap-1 mb-3">
+              <h2 className="text-xs sm:text-sm uppercase tracking-wider text-amber-400 font-semibold font-sans">
                 3. Arma Inicial
               </h2>
-              <span className="text-xs text-stone-400">
-                Escala seu ataque básico e concede bônus
+              <span className="text-[11px] text-stone-400">
+                Escalona o ataque básico
               </span>
             </div>
 
@@ -234,7 +234,7 @@ export default function CharacterCreation() {
                     key={wpn.id}
                     type="button"
                     onClick={() => handleSelectWeapon(wpn.id)}
-                    className={`text-left p-3.5 rounded-xl border transition-all ${
+                    className={`text-left p-3 sm:p-3.5 rounded-xl border transition-all active:scale-[0.99] ${
                       isSelected
                         ? 'bg-amber-500/10 border-amber-500'
                         : 'bg-stone-950/60 border-stone-800 hover:border-stone-600'
@@ -245,7 +245,7 @@ export default function CharacterCreation() {
                         {wpn.name}
                       </span>
                       {isRec && (
-                        <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
                           Ideal
                         </span>
                       )}
@@ -256,16 +256,16 @@ export default function CharacterCreation() {
                         {scaleLabels[wpn.scalingStat]}
                       </strong>
                     </div>
-                    <p className="text-xs text-stone-400 mt-1.5">
+                    <p className="text-xs text-stone-400 mt-1">
                       {wpn.description}
                     </p>
-                    <div className="flex flex-wrap gap-1.5 mt-2.5">
+                    <div className="flex flex-wrap gap-1.5 mt-2">
                       {Object.entries(wpn.bonuses)
                         .filter(([, val]) => val > 0)
                         .map(([k, val]) => (
                           <span
                             key={k}
-                            className="text-[11px] px-2 py-0.5 rounded bg-stone-800 text-emerald-300 font-medium"
+                            className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded bg-stone-800 text-emerald-300 font-medium"
                           >
                             +{val} {k.toUpperCase()}
                           </span>
@@ -278,12 +278,12 @@ export default function CharacterCreation() {
           </section>
 
           {/* 4. Habilidades Iniciais */}
-          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-5 shadow-lg">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm uppercase tracking-wider text-amber-400 font-semibold font-sans">
+          <section className="bg-stone-900/80 border border-stone-800 rounded-xl p-4 sm:p-5 shadow-lg">
+            <div className="flex flex-wrap items-center justify-between gap-1 mb-3">
+              <h2 className="text-xs sm:text-sm uppercase tracking-wider text-amber-400 font-semibold font-sans">
                 4. Habilidade Inicial
               </h2>
-              <span className="text-xs text-stone-400">
+              <span className="text-[11px] text-stone-400">
                 Selecione 1 técnica para começar sua jornada
               </span>
             </div>
@@ -297,7 +297,7 @@ export default function CharacterCreation() {
                     key={sk.id}
                     type="button"
                     onClick={() => toggleSkill(sk.id)}
-                    className={`text-left p-3.5 rounded-xl border transition-all ${
+                    className={`text-left p-3 sm:p-3.5 rounded-xl border transition-all active:scale-[0.99] ${
                       isSelected
                         ? 'bg-purple-500/15 border-purple-400'
                         : 'bg-stone-950/60 border-stone-800 hover:border-stone-600'
@@ -308,15 +308,15 @@ export default function CharacterCreation() {
                         <Zap className="w-3.5 h-3.5 text-purple-400" />
                         {sk.name}
                       </span>
-                      <span className="text-xs font-medium px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/20">
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/20">
                         {sk.cost} MP
                       </span>
                     </div>
-                    <p className="text-xs text-stone-400 mt-1.5 leading-relaxed">
+                    <p className="text-xs text-stone-400 mt-1 leading-relaxed">
                       {sk.description}
                     </p>
                     {sk.requiresWeapon && (
-                      <span className="inline-block mt-2 text-[10px] uppercase tracking-wider text-emerald-300/90">
+                      <span className="inline-block mt-1.5 text-[10px] uppercase tracking-wider text-emerald-300/90 font-medium">
                         ★ Habilidade de Arco
                       </span>
                     )}
@@ -329,35 +329,35 @@ export default function CharacterCreation() {
 
         {/* Coluna Direita: Resumo da Ficha e Botão Iniciar */}
         <div className="lg:col-span-1">
-          <div className="sticky top-6 bg-stone-900/90 border border-amber-500/30 rounded-xl p-6 shadow-xl space-y-5">
+          <div className="lg:sticky lg:top-6 bg-stone-900/95 border border-amber-500/30 rounded-xl p-4 sm:p-6 shadow-xl space-y-4 sm:space-y-5">
             <div>
-              <span className="text-xs uppercase tracking-widest text-amber-400 font-semibold">
+              <span className="text-[11px] uppercase tracking-widest text-amber-400 font-semibold">
                 Ficha do Herói
               </span>
-              <h2 className="text-2xl font-bold text-stone-100 mt-1 truncate">
+              <h2 className="text-xl sm:text-2xl font-bold text-stone-100 mt-0.5 truncate">
                 {name || 'Sem Nome'}
               </h2>
-              <p className="text-sm text-stone-400">
+              <p className="text-xs sm:text-sm text-stone-400">
                 {currentClass.name} • Nível 1
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-stone-800">
-              <div className="bg-red-950/30 border border-red-900/40 rounded-lg p-2.5">
-                <div className="text-[11px] text-red-300 uppercase">Vida Máx</div>
-                <div className="text-lg font-bold text-red-200">
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-stone-800">
+              <div className="bg-red-950/30 border border-red-900/40 rounded-lg p-2 sm:p-2.5">
+                <div className="text-[10px] sm:text-[11px] text-red-300 uppercase">Vida Máx</div>
+                <div className="text-base sm:text-lg font-bold text-red-200">
                   {previewStats.hp} HP
                 </div>
               </div>
-              <div className="bg-blue-950/30 border border-blue-900/40 rounded-lg p-2.5">
-                <div className="text-[11px] text-blue-300 uppercase">Mana Máx</div>
-                <div className="text-lg font-bold text-blue-200">
+              <div className="bg-blue-950/30 border border-blue-900/40 rounded-lg p-2 sm:p-2.5">
+                <div className="text-[10px] sm:text-[11px] text-blue-300 uppercase">Mana Máx</div>
+                <div className="text-base sm:text-lg font-bold text-blue-200">
                   {previewStats.mp} MP
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-xs sm:text-sm">
               <div className="flex justify-between py-1 border-b border-stone-800/70">
                 <span className="text-stone-400">Força (FOR)</span>
                 <span className="font-semibold text-stone-100">
@@ -390,14 +390,14 @@ export default function CharacterCreation() {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-stone-800 space-y-2 text-xs">
-              <div>
+            <div className="pt-2.5 border-t border-stone-800 space-y-1.5 text-xs">
+              <div className="truncate">
                 <span className="text-stone-400">Arma: </span>
                 <span className="text-stone-200 font-medium">
                   {currentWeapon.name}
                 </span>
               </div>
-              <div>
+              <div className="truncate">
                 <span className="text-stone-400">Habilidade: </span>
                 <span className="text-purple-300 font-medium">
                   {selectedSkills
@@ -419,7 +419,7 @@ export default function CharacterCreation() {
                   skillIds: selectedSkills,
                 })
               }
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 disabled:opacity-40 disabled:cursor-not-allowed text-stone-950 font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-950/50 transition"
+              className="w-full py-3 sm:py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-stone-950 font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-950/50 transition"
             >
               <span>Iniciar Jornada</span>
               <ChevronRight className="w-5 h-5" />
