@@ -48,10 +48,9 @@ export default function CharacterCreation() {
     STARTING_WEAPONS[0];
 
   // Habilidades disponíveis para a classe selecionada
-  // Se for Ladino e escolher Arco, adiciona 'Tiro Certo'
+  // Se for Ladino e a arma NÃO for arco, exibe Tiro Certo como bloqueada ou com aviso
   const availableSkills = SKILLS.filter((sk) => {
     if (sk.classId !== selectedClassId) return false;
-    if (sk.requiresWeapon && sk.requiresWeapon !== selectedWeaponId) return false;
     return true;
   });
 
@@ -75,7 +74,11 @@ export default function CharacterCreation() {
   };
 
   const toggleSkill = (skillId) => {
-    // Escolhe apenas uma habilidade inicial
+    const targetSkill = SKILLS.find((s) => s.id === skillId);
+    // Se a habilidade requer arco e a arma atual não é arco, seleciona o Arco automaticamente!
+    if (targetSkill?.requiresWeapon && selectedWeaponId !== targetSkill.requiresWeapon) {
+      setSelectedWeaponId(targetSkill.requiresWeapon);
+    }
     setSelectedSkills([skillId]);
   };
 
@@ -291,6 +294,7 @@ export default function CharacterCreation() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {availableSkills.map((sk) => {
                 const isSelected = selectedSkills.includes(sk.id);
+                const hasWeaponRequirement = sk.requiresWeapon && selectedWeaponId !== sk.requiresWeapon;
 
                 return (
                   <button
@@ -316,9 +320,16 @@ export default function CharacterCreation() {
                       {sk.description}
                     </p>
                     {sk.requiresWeapon && (
-                      <span className="inline-block mt-1.5 text-[10px] uppercase tracking-wider text-emerald-300/90 font-medium">
-                        ★ Habilidade de Arco
-                      </span>
+                      <div className="mt-1.5 flex items-center gap-1.5 text-[10px] font-medium">
+                        <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 uppercase tracking-wider">
+                          ★ Requer Arco de Madeira
+                        </span>
+                        {hasWeaponRequirement && (
+                          <span className="text-amber-400/90 italic">
+                            (Equipa ao clicar)
+                          </span>
+                        )}
+                      </div>
                     )}
                   </button>
                 );
