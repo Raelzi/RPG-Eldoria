@@ -243,14 +243,24 @@ export default function BattleView() {
               const sk = SKILLS.find((s) => s.id === skId);
               if (!sk) return null;
               const enoughMp = player.mp >= sk.cost;
+              const isBowRequiredBlocked = Boolean(sk.requiresWeapon && player.weapon?.id !== sk.requiresWeapon);
+              const isMeleeRequiredBlocked = Boolean(sk.requiresWeaponType === 'melee' && player.weapon?.id === 'longbow');
+              const isWeaponBlocked = isBowRequiredBlocked || isMeleeRequiredBlocked;
+              const canUse = enoughMp && !isWeaponBlocked;
 
               return (
                 <button
                   key={sk.id}
                   type="button"
-                  disabled={!enoughMp}
+                  disabled={!canUse}
                   onClick={() => performSkill(sk.id)}
-                  className="p-3 sm:p-3.5 rounded-xl bg-stone-950/80 hover:bg-purple-950/30 disabled:opacity-40 disabled:cursor-not-allowed border border-stone-800 hover:border-purple-500/50 text-left transition active:scale-[0.99]"
+                  className={`p-3 sm:p-3.5 rounded-xl border text-left transition ${
+                    isWeaponBlocked
+                      ? 'opacity-40 cursor-not-allowed bg-stone-950/40 border-stone-900'
+                      : !enoughMp
+                      ? 'opacity-50 cursor-not-allowed bg-stone-950/80 border-stone-800'
+                      : 'bg-stone-950/80 hover:bg-purple-950/30 border-stone-800 hover:border-purple-500/50 active:scale-[0.99]'
+                  }`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold text-stone-100 text-xs sm:text-sm flex items-center gap-1.5 truncate">
@@ -263,9 +273,9 @@ export default function BattleView() {
                     </span>
                     <span
                       className={`text-[11px] sm:text-xs px-2 py-0.5 rounded font-semibold shrink-0 ${
-                        enoughMp
-                          ? 'bg-blue-500/20 text-blue-300'
-                          : 'bg-red-500/20 text-red-300'
+                        !enoughMp
+                          ? 'bg-red-500/20 text-red-300'
+                          : 'bg-blue-500/20 text-blue-300'
                       }`}
                     >
                       {sk.cost} MP
@@ -274,6 +284,11 @@ export default function BattleView() {
                   <p className="text-[11px] sm:text-xs text-stone-400 mt-1 leading-snug">
                     {sk.description}
                   </p>
+                  {isWeaponBlocked && (
+                    <div className="mt-1 text-[10px] font-medium text-amber-400/90">
+                      🔒 Incompatível com {player.weapon?.name}
+                    </div>
+                  )}
                 </button>
               );
             })}

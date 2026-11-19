@@ -578,28 +578,54 @@ export const useGameStore = create(
           );
         } else {
           // Habilidade ofensiva
+          const scalingStat = skill.scaling || player.weapon?.scalingStat || 'str';
+          const statPower = eff[scalingStat] || eff.str;
           const statVal = eff[skill.scaling] || eff.str;
           const critChance = eff.critChance + (skill.bonusCrit || 0);
           const isCrit = Math.random() * 100 < critChance;
           const critMult = player.classInfo.id === 'rogue' ? 1.75 : 1.4;
 
-          // Habilidades causam aprox. 1.3x a 1.6x o dano do ataque básico
-          const skillVariance = (Math.random() * 3) - 1;
-          let rawDmg = (statVal * 0.55 * skill.multiplier) + 4 + skillVariance;
-          if (isCrit) rawDmg *= critMult;
+          // Se for habilidade de múltiplos disparos (ex: Tiro Triplo: 3 flechas de 50% de dano base)
+          if (skill.isMultiHit) {
+            const hits = skill.hits || 3;
+            let totalDmg = 0;
+            const hitValues = [];
 
-          const defFactor = skill.type === 'magic' ? 0.25 : 0.35;
-          const finalDmg = Math.max(
-            4,
-            Math.round(rawDmg - updatedEnemy.def * defFactor)
-          );
+            for (let i = 0; i < hits; i++) {
+              const variance = (Math.random() * 2) - 1;
+              let arrowDmg = (statPower * 0.55 * skill.multiplier) + 1.5 + variance;
+              const arrowCrit = Math.random() * 100 < eff.critChance;
+              if (arrowCrit) arrowDmg *= critMult;
 
-          updatedEnemy.hp = Math.max(0, updatedEnemy.hp - finalDmg);
-          turnLogs.push(
-            `${isCrit ? '💥 CRÍTICO! ' : '🔥 '}Você usou ${
-              skill.name
-            } causando ${finalDmg} de dano!`
-          );
+              const defReduction = (updatedEnemy.def * 0.15);
+              const finalArrowDmg = Math.max(2, Math.round(arrowDmg - defReduction));
+              hitValues.push(finalArrowDmg);
+              totalDmg += finalArrowDmg;
+            }
+
+            updatedEnemy.hp = Math.max(0, updatedEnemy.hp - totalDmg);
+            turnLogs.push(
+              `🏹 Você disparou [${skill.name}]: ${hits} flechas atingiram causando ${totalDmg} de dano (${hitValues.join(' + ')})!`
+            );
+          } else {
+            // Habilidades normais causam aprox. 1.3x a 1.6x o dano do ataque básico
+            const skillVariance = (Math.random() * 3) - 1;
+            let rawDmg = (statVal * 0.55 * skill.multiplier) + 4 + skillVariance;
+            if (isCrit) rawDmg *= critMult;
+
+            const defFactor = skill.type === 'magic' ? 0.25 : 0.35;
+            const finalDmg = Math.max(
+              4,
+              Math.round(rawDmg - updatedEnemy.def * defFactor)
+            );
+
+            updatedEnemy.hp = Math.max(0, updatedEnemy.hp - finalDmg);
+            turnLogs.push(
+              `${isCrit ? '💥 CRÍTICO! ' : '🔥 '}Você usou ${
+                skill.name
+              } causando ${finalDmg} de dano!`
+            );
+          }
 
           if (skill.effect && updatedEnemy.hp > 0) {
             if (Math.random() < skill.effect.chance) {

@@ -63,21 +63,30 @@ export default function CharacterCreation() {
 
   const handleSelectWeapon = (weaponId) => {
     setSelectedWeaponId(weaponId);
-    // Se for Ladino e escolher Arco de Madeira, sugerir Tiro Certo
+    // Se for Ladino e trocar para o Arco, verifica se a habilidade atual é melee
     if (selectedClassId === 'rogue') {
       if (weaponId === 'longbow') {
-        setSelectedSkills(['sure_shot']);
-      } else if (selectedSkills.includes('sure_shot')) {
-        setSelectedSkills(['crit_slash']);
+        const currentSkill = SKILLS.find((s) => s.id === selectedSkills[0]);
+        if (currentSkill?.requiresWeaponType === 'melee') {
+          setSelectedSkills(['sure_shot']);
+        }
+      } else {
+        const currentSkill = SKILLS.find((s) => s.id === selectedSkills[0]);
+        if (currentSkill?.requiresWeapon === 'longbow') {
+          setSelectedSkills(['crit_slash']);
+        }
       }
     }
   };
 
   const toggleSkill = (skillId) => {
     const targetSkill = SKILLS.find((s) => s.id === skillId);
-    // Se a habilidade requer arco e a arma atual não é arco, seleciona o Arco automaticamente!
+    // Não permite selecionar se estiver bloqueada para a arma atual
     if (targetSkill?.requiresWeapon && selectedWeaponId !== targetSkill.requiresWeapon) {
-      setSelectedWeaponId(targetSkill.requiresWeapon);
+      return;
+    }
+    if (targetSkill?.requiresWeaponType === 'melee' && selectedWeaponId === 'longbow') {
+      return;
     }
     setSelectedSkills([skillId]);
   };
@@ -294,41 +303,51 @@ export default function CharacterCreation() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {availableSkills.map((sk) => {
                 const isSelected = selectedSkills.includes(sk.id);
-                const hasWeaponRequirement = sk.requiresWeapon && selectedWeaponId !== sk.requiresWeapon;
+                // Bloqueado se:
+                // 1) Requer arco e a arma NÃO é arco
+                // 2) Requer corpo a corpo (adagas) e a arma É arco
+                const isBowRequiredBlocked = Boolean(sk.requiresWeapon && selectedWeaponId !== sk.requiresWeapon);
+                const isMeleeRequiredBlocked = Boolean(sk.requiresWeaponType === 'melee' && selectedWeaponId === 'longbow');
+                const isDisabled = isBowRequiredBlocked || isMeleeRequiredBlocked;
 
                 return (
                   <button
                     key={sk.id}
                     type="button"
+                    disabled={isDisabled}
                     onClick={() => toggleSkill(sk.id)}
-                    className={`text-left p-3 sm:p-3.5 rounded-xl border transition-all active:scale-[0.99] ${
-                      isSelected
-                        ? 'bg-purple-500/15 border-purple-400'
-                        : 'bg-stone-950/60 border-stone-800 hover:border-stone-600'
+                    className={`text-left p-3 sm:p-3.5 rounded-xl border transition-all ${
+                      isDisabled
+                        ? 'opacity-40 cursor-not-allowed bg-stone-950/40 border-stone-900 text-stone-500'
+                        : isSelected
+                        ? 'bg-purple-500/15 border-purple-400 active:scale-[0.99]'
+                        : 'bg-stone-950/60 border-stone-800 hover:border-stone-600 active:scale-[0.99]'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold text-stone-100 text-sm flex items-center gap-1.5">
-                        <Zap className="w-3.5 h-3.5 text-purple-400" />
+                      <span className={`font-semibold text-sm flex items-center gap-1.5 ${isDisabled ? 'text-stone-500' : 'text-stone-100'}`}>
+                        <Zap className={`w-3.5 h-3.5 ${isDisabled ? 'text-stone-600' : 'text-purple-400'}`} />
                         {sk.name}
                       </span>
-                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/20">
+                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${
+                        isDisabled
+                          ? 'bg-stone-900 border-stone-800 text-stone-600'
+                          : 'bg-blue-500/15 text-blue-300 border-blue-500/20'
+                      }`}>
                         {sk.cost} MP
                       </span>
                     </div>
-                    <p className="text-xs text-stone-400 mt-1 leading-relaxed">
+                    <p className={`text-xs mt-1 leading-relaxed ${isDisabled ? 'text-stone-600' : 'text-stone-400'}`}>
                       {sk.description}
                     </p>
-                    {sk.requiresWeapon && (
-                      <div className="mt-1.5 flex items-center gap-1.5 text-[10px] font-medium">
-                        <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 uppercase tracking-wider">
-                          ★ Requer Arco de Madeira
-                        </span>
-                        {hasWeaponRequirement && (
-                          <span className="text-amber-400/90 italic">
-                            (Equipa ao clicar)
-                          </span>
-                        )}
+                    {isBowRequiredBlocked && (
+                      <div className="mt-1.5 text-[10px] font-semibold text-amber-500/80 uppercase tracking-wider">
+                        🔒 Indisponível (Requer Arco de Madeira)
+                      </div>
+                    )}
+                    {isMeleeRequiredBlocked && (
+                      <div className="mt-1.5 text-[10px] font-semibold text-amber-500/80 uppercase tracking-wider">
+                        🔒 Indisponível com Arco (Requer Adagas)
                       </div>
                     )}
                   </button>

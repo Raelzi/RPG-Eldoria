@@ -228,23 +228,25 @@ export const SKILLS = [
     id: 'crit_slash',
     name: 'Corte Crítico',
     classId: 'rogue',
+    requiresWeaponType: 'melee', // Apenas corpo a corpo (Adagas)
     cost: 14,
     type: 'agile',
     scaling: 'dex',
     multiplier: 1.7,
     bonusCrit: 40,
-    description: 'Atinge com precisão cirúrgica em pontos vulneráveis com +40% de chance de crítico.',
+    description: 'Atinge com precisão cirúrgica em pontos vulneráveis com +40% de chance de crítico. (Requer Adagas)',
   },
   {
     id: 'stab',
     name: 'Facada',
     classId: 'rogue',
+    requiresWeaponType: 'melee', // Apenas corpo a corpo (Adagas)
     cost: 10,
     type: 'agile',
     scaling: 'dex',
     multiplier: 1.5,
     effect: { type: 'poison', chance: 0.85, duration: 3, dotDamage: 12 },
-    description: 'Golpe traiçoeiro e perfurante (150% DES) que causa envenenamento rápido.',
+    description: 'Golpe traiçoeiro e perfurante (150% DES) que causa envenenamento rápido. (Requer Adagas)',
   },
   {
     id: 'sure_shot',
@@ -257,6 +259,19 @@ export const SKILLS = [
     multiplier: 1.85,
     bonusCrit: 25,
     description: 'Disparo concentrado com o arco (185% DES) que ignora parte da defesa adversária.',
+  },
+  {
+    id: 'triple_shot',
+    name: 'Tiro Triplo',
+    classId: 'rogue',
+    requiresWeapon: 'longbow',
+    cost: 16,
+    type: 'agile',
+    isMultiHit: true,
+    hits: 3,
+    multiplier: 0.5,
+    scaling: 'dex',
+    description: 'Dispara 3 flechas em rápida sucessão, cada uma causando 50% do dano base do herói.',
   },
 
   // Paladino
