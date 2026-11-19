@@ -20,15 +20,15 @@ export const CLASSES = [
       name: 'Pele de Ferro',
       description: 'Reduz todo o dano físico e mágico recebido em 15%.',
     },
-    recommendedWeapon: 'greatsword',
-    recommendedSkills: ['heavy_strike', 'cross_slash'],
+    recommendedWeapon: 'two_handed_sword',
+    recommendedSkills: ['circular_slash'],
   },
   {
     id: 'mage',
     name: 'Arcanista do Véu',
     tagline: 'Tecelão de chamas astrais e lampejos arcanos',
     description:
-      'Estudioso das torres esquecidas que canaliza energias mágicas destrutivas para aniquilar inimigos com fogo e velocidade pura.',
+      'Estudioso das torres esquecidas que canaliza energias mágicas destrutivas para aniquilar inimigos com feitiços arcanos ou tomo ancestral.',
     icon: 'Flame',
     color: 'purple',
     baseStats: {
@@ -45,7 +45,7 @@ export const CLASSES = [
       description: 'Regenera +8 de Mana adicional ao final de cada turno em combate.',
     },
     recommendedWeapon: 'runic_staff',
-    recommendedSkills: ['fireball', 'flash_step'],
+    recommendedSkills: ['fireball'],
   },
   {
     id: 'rogue',
@@ -69,14 +69,14 @@ export const CLASSES = [
       description: 'Acertos críticos causam 200% de dano (em vez de 150%) e concedem +15% de chance de esquiva.',
     },
     recommendedWeapon: 'twin_daggers',
-    recommendedSkills: ['crit_slash', 'stab'],
+    recommendedSkills: ['crit_slash'],
   },
   {
     id: 'paladin',
     name: 'Guardião Solar',
     tagline: 'Campeão juramentado da Chama Primeira',
     description:
-      'Combina marcialidade pesada com bênçãos sagradas, capaz tanto de punir abominações quanto de proteger aliados com seu escudo.',
+      'Combina marcialidade pesada com bênçãos sagradas, capaz tanto de punir abominações com a luz quanto de esmagar com o martelo consagrado.',
     icon: 'Sparkles',
     color: 'amber',
     baseStats: {
@@ -92,32 +92,60 @@ export const CLASSES = [
       name: 'Graça da Aurora',
       description: 'Restaura automaticamente 15% do HP máximo ao vencer qualquer batalha.',
     },
-    recommendedWeapon: 'warhammer',
-    recommendedSkills: ['shield_bash', 'punishing_light'],
+    recommendedWeapon: 'warhammer_shield',
+    recommendedSkills: ['stunning_strike'],
   },
 ];
 
 export const STARTING_WEAPONS = [
+  // Guerreiro
   {
-    id: 'greatsword',
-    name: 'Espada Longa',
+    id: 'two_handed_sword',
+    classId: 'warrior',
+    name: 'Espada de Duas Mãos',
     type: 'Pesada',
     scalingStat: 'str',
-    description: 'Lâmina versátil e resistente, ideal para cortes firmes e aparos precisos.',
-    bonuses: { str: 6, def: 2, maxHp: 10, int: 0, dex: 0, maxMp: 0, critChance: 0 },
-    flavorVerb: 'desfere um corte certeiro com sua Espada Longa',
+    description: 'Montante massivo empunhado com as duas mãos para desferir golpes arrasadores com alto alcance.',
+    bonuses: { str: 8, def: 1, maxHp: 10, int: 0, dex: 0, maxMp: 0, critChance: 0 },
+    flavorVerb: 'desfere um golpe devastador com sua Espada de Duas Mãos',
   },
+  {
+    id: 'sword_and_shield',
+    classId: 'warrior',
+    name: 'Espada e Escudo',
+    type: 'Equilibrada',
+    scalingStat: 'str',
+    description: 'Combinação clássica que une corte seguro e uma sólida proteção metálica contra investidas.',
+    bonuses: { str: 4, def: 5, maxHp: 15, int: 0, dex: 0, maxMp: 0, critChance: 0 },
+    flavorVerb: 'golpeia com firmeza alternando sua Espada e Escudo',
+  },
+
+  // Mago
   {
     id: 'runic_staff',
-    name: 'Cajado de madeira',
+    classId: 'mage',
+    name: 'Cajado',
     type: 'Arcana',
     scalingStat: 'int',
-    description: 'Cajado entalhado em madeira antiga capaz de canalizar correntes de energia mágica.',
-    bonuses: { str: 0, def: 1, maxHp: 0, int: 7, dex: 1, maxMp: 20, critChance: 0 },
-    flavorVerb: 'dispara um feixe de energia com seu Cajado de madeira',
+    description: 'Cajado entalhado em carvalho com cristal focalizador que intensifica labaredas e lampejos mágicos.',
+    bonuses: { str: 0, def: 1, maxHp: 0, int: 8, dex: 1, maxMp: 20, critChance: 0 },
+    flavorVerb: 'canaliza poder flamejante com seu Cajado',
   },
   {
+    id: 'spellbook',
+    classId: 'mage',
+    name: 'Livro de Magias',
+    type: 'Tomo Místico',
+    scalingStat: 'int',
+    description: 'Grimório repleto de encantamentos de proteção e disparos glaciais ancestrais.',
+    bonuses: { str: 0, def: 3, maxHp: 5, int: 7, dex: 0, maxMp: 25, critChance: 0 },
+    flavorVerb: 'invoca feitiços recitando as páginas do seu Livro de Magias',
+  },
+
+  // Ladino
+  {
     id: 'twin_daggers',
+    classId: 'rogue',
     name: 'Adagas de aço',
     type: 'Ágil',
     scalingStat: 'dex',
@@ -126,22 +154,36 @@ export const STARTING_WEAPONS = [
     flavorVerb: 'corta com rapidez usando suas Adagas de aço',
   },
   {
-    id: 'warhammer',
-    name: 'Martelo Meu Consagrado',
-    type: 'Sagrada',
-    scalingStat: 'str',
-    description: 'Arma de impacto abençoada, perfeita para esmagar ameaças com respeito e fé.',
-    bonuses: { str: 4, def: 3, maxHp: 15, int: 4, dex: 0, maxMp: 10, critChance: 0 },
-    flavorVerb: 'esmaga com autoridade usando o Martelo Meu Consagrado',
-  },
-  {
     id: 'longbow',
+    classId: 'rogue',
     name: 'Arco de Madeira',
     type: 'Distância',
     scalingStat: 'dex',
     description: 'Arco flexível entalhado em madeira resistente, ótimo para disparos de longa distância.',
     bonuses: { str: 3, def: 0, maxHp: 5, int: 1, dex: 5, maxMp: 0, critChance: 9 },
     flavorVerb: 'dispara uma flecha certeira com seu Arco de Madeira',
+  },
+
+  // Paladino
+  {
+    id: 'warhammer_shield',
+    classId: 'paladin',
+    name: 'Martelo Meu Consagrado',
+    type: 'Sagrada',
+    scalingStat: 'str',
+    description: 'Martelo sagrado de uma mão empunhado junto a um escudo bento, unindo concussão atordoante e bênção.',
+    bonuses: { str: 5, def: 4, maxHp: 15, int: 3, dex: 0, maxMp: 10, critChance: 0 },
+    flavorVerb: 'esmaga com autoridade usando o Martelo Meu Consagrado',
+  },
+  {
+    id: 'longsword_shield',
+    classId: 'paladin',
+    name: 'Espada longa e Escudo',
+    type: 'Defensiva Sagrada',
+    scalingStat: 'str',
+    description: 'Lâmina nobre acompanhada de grande escudo juramentado, canalizando escudos divinos e retribuição solar.',
+    bonuses: { str: 4, def: 6, maxHp: 20, int: 4, dex: 0, maxMp: 10, critChance: 0 },
+    flavorVerb: 'desfere um corte sagrado com sua Espada longa e Escudo',
   },
 ];
 
@@ -176,46 +218,74 @@ export const LOOT_WEAPONS = [
 ];
 
 export const SKILLS = [
-  // Guerreiro
+  // Guerreiro — Espada de Duas Mãos
   {
-    id: 'heavy_strike',
-    name: 'Golpe forte',
+    id: 'circular_slash',
+    name: 'Corte Circular',
     classId: 'warrior',
-    cost: 12,
+    requiresWeapon: 'two_handed_sword',
+    cost: 14,
     type: 'attack',
     scaling: 'str',
-    multiplier: 1.75,
-    effect: { type: 'stun', chance: 0.35, duration: 1 },
-    description: 'Ataque pesado (175% FOR) que atordoa o inimigo por 1 turno com 35% de chance.',
+    multiplier: 1.8,
+    description: 'Gira a montante de duas mãos em arco varrendo as defesas do inimigo (180% FOR).',
   },
   {
     id: 'cross_slash',
     name: 'Corte Cruzado',
     classId: 'warrior',
+    requiresWeapon: 'two_handed_sword',
     cost: 16,
     type: 'attack',
     scaling: 'str',
-    multiplier: 1.95,
+    multiplier: 2.0,
     bonusCrit: 15,
-    description: "Desfere dois cortes rápidos em 'X' (195% FOR) com +15% de chance de crítico.",
+    description: "Desfere dois golpes brutais em 'X' com a espada pesada (200% FOR) com +15% de chance crítica.",
   },
 
-  // Mago
+  // Guerreiro — Espada e Escudo
+  {
+    id: 'shield_strike',
+    name: 'Golpe de escudo',
+    classId: 'warrior',
+    requiresWeapon: 'sword_and_shield',
+    cost: 12,
+    type: 'buff',
+    scaling: 'def',
+    effect: { type: 'shield', duration: 3, defBonus: 8 },
+    description: 'Impacto violento com a borda do escudo: concede Escudo Protetor e atordoa o inimigo (35% de chance).',
+  },
+  {
+    id: 'heavy_strike',
+    name: 'Golpe forte',
+    classId: 'warrior',
+    requiresWeapon: 'sword_and_shield',
+    cost: 12,
+    type: 'attack',
+    scaling: 'str',
+    multiplier: 1.75,
+    effect: { type: 'stun', chance: 0.35, duration: 1 },
+    description: 'Investida com a espada enquanto se protege (175% FOR), com chance de desorientar o adversário.',
+  },
+
+  // Mago — Cajado
   {
     id: 'fireball',
     name: 'Bola de fogo',
     classId: 'mage',
+    requiresWeapon: 'runic_staff',
     cost: 16,
     type: 'magic',
     scaling: 'int',
     multiplier: 1.85,
     effect: { type: 'burn', chance: 0.8, duration: 3, dotDamage: 10 },
-    description: 'Lança uma esfera ardente (185% INT) com 80% de chance de causar queimadura contínua.',
+    description: 'Lança uma esfera ardente canalizada pelo cajado (185% INT) com 80% de chance de queimadura contínua.',
   },
   {
     id: 'flash_step',
     name: 'Lampejo',
     classId: 'mage',
+    requiresWeapon: 'runic_staff',
     cost: 14,
     type: 'buff',
     scaling: 'int',
@@ -223,31 +293,58 @@ export const SKILLS = [
     description: 'Move-se em um clarão de luz arcana: ganha Escudo protetor e ataca a mente do inimigo.',
   },
 
-  // Ladino
+  // Mago — Livro de Magias
+  {
+    id: 'frost_shot',
+    name: 'Tiro de Gelo',
+    classId: 'mage',
+    requiresWeapon: 'spellbook',
+    cost: 14,
+    type: 'magic',
+    scaling: 'int',
+    multiplier: 1.75,
+    effect: { type: 'weaken', chance: 0.85, duration: 2 },
+    description: 'Dispara estilhaços glaciais das páginas arcanas (175% INT), reduzindo o ataque do oponente por 2 turnos.',
+  },
+  {
+    id: 'mana_shield',
+    name: 'Escudo de Mana',
+    classId: 'mage',
+    requiresWeapon: 'spellbook',
+    cost: 16,
+    type: 'buff',
+    scaling: 'int',
+    effect: { type: 'shield', duration: 3, defBonus: 12 },
+    description: 'Converte poder místico em barreira impenetrável: ganha grande Escudo Mágico e restaura um pouco de HP.',
+  },
+
+  // Ladino — Adagas de Aço
   {
     id: 'crit_slash',
     name: 'Corte Crítico',
     classId: 'rogue',
-    requiresWeaponType: 'melee', // Apenas corpo a corpo (Adagas)
+    requiresWeapon: 'twin_daggers',
     cost: 14,
     type: 'agile',
     scaling: 'dex',
     multiplier: 1.7,
     bonusCrit: 40,
-    description: 'Atinge com precisão cirúrgica em pontos vulneráveis com +40% de chance de crítico. (Requer Adagas)',
+    description: 'Atinge com precisão cirúrgica em pontos vulneráveis com +40% de chance de crítico.',
   },
   {
     id: 'stab',
     name: 'Facada',
     classId: 'rogue',
-    requiresWeaponType: 'melee', // Apenas corpo a corpo (Adagas)
+    requiresWeapon: 'twin_daggers',
     cost: 10,
     type: 'agile',
     scaling: 'dex',
     multiplier: 1.5,
     effect: { type: 'poison', chance: 0.85, duration: 3, dotDamage: 12 },
-    description: 'Golpe traiçoeiro e perfurante (150% DES) que causa envenenamento rápido. (Requer Adagas)',
+    description: 'Golpe traiçoeiro e perfurante (150% DES) que causa envenenamento rápido.',
   },
+
+  // Ladino — Arco de Madeira
   {
     id: 'sure_shot',
     name: 'Tiro Certo',
@@ -274,26 +371,53 @@ export const SKILLS = [
     description: 'Dispara 3 flechas em rápida sucessão, cada uma causando 50% do dano base do herói.',
   },
 
-  // Paladino
+  // Paladino — Martelo Meu Consagrado
   {
-    id: 'shield_bash',
-    name: 'Golpe de Escudo',
+    id: 'stunning_strike',
+    name: 'Golpe Atordoante',
     classId: 'paladin',
-    cost: 12,
+    requiresWeapon: 'warhammer_shield',
+    cost: 14,
+    type: 'attack',
+    scaling: 'str',
+    multiplier: 1.75,
+    effect: { type: 'stun', chance: 0.8, duration: 1 },
+    description: 'Esmaga a guarda inimiga com o peso do martelo sagrado (175% FOR), com 80% de chance de atordoar por 1 turno.',
+  },
+  {
+    id: 'divine_hammer',
+    name: 'Martelo Divino',
+    classId: 'paladin',
+    requiresWeapon: 'warhammer_shield',
+    cost: 16,
+    type: 'buff',
+    scaling: 'str',
+    effect: { type: 'atk_buff', duration: 3, atkBonus: 8 },
+    description: 'Encanta o martelo com fogo solar: aumenta muito o poder de ataque por 3 turnos e cura ferimentos.',
+  },
+
+  // Paladino — Espada longa e Escudo
+  {
+    id: 'divine_shield',
+    name: 'Escudo Divino',
+    classId: 'paladin',
+    requiresWeapon: 'longsword_shield',
+    cost: 14,
     type: 'buff',
     scaling: 'def',
-    effect: { type: 'shield', duration: 3, defBonus: 8 },
-    description: 'Golpeia com o escudo: ganha Escudo Sagrado, +8 DEF e atordoa o oponente (40% de chance).',
+    effect: { type: 'shield', duration: 3, defBonus: 12 },
+    description: 'Ergue o grande escudo juramentado: projeta uma barreira sacra sólida (+12 DEF) e absorve danos.',
   },
   {
     id: 'punishing_light',
     name: 'Luz Punitiva',
     classId: 'paladin',
+    requiresWeapon: 'longsword_shield',
     cost: 16,
     type: 'magic',
     scaling: 'str',
-    multiplier: 1.8,
-    description: 'Invoca um feixe solar radiante (180% FOR + INT) que castiga as trevas e restaura um pouco de HP.',
+    multiplier: 1.85,
+    description: 'Lança um feixe radiante da ponta da espada longa (185% FOR + INT) que expurga o inimigo e cura seu HP.',
   },
 ];
 

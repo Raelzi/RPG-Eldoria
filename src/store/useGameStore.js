@@ -26,11 +26,13 @@ function computeEffectiveStats(player) {
   };
   const shieldBuff = player.buffs?.find((bf) => bf.type === 'shield');
   const defBonus = shieldBuff ? shieldBuff.defBonus : 0;
+  const atkBuff = player.buffs?.find((bf) => bf.type === 'atk_buff');
+  const atkBonus = atkBuff ? atkBuff.atkBonus : 0;
 
   return {
     maxHp: player.baseStats.maxHp + (b.maxHp || 0),
     maxMp: player.baseStats.maxMp + (b.maxMp || 0),
-    str: player.baseStats.str + (b.str || 0),
+    str: player.baseStats.str + (b.str || 0) + atkBonus,
     int: player.baseStats.int + (b.int || 0),
     dex: player.baseStats.dex + (b.dex || 0),
     def: player.baseStats.def + (b.def || 0) + defBonus,
@@ -561,21 +563,39 @@ export const useGameStore = create(
           );
           updatedPlayer.hp = nextHp;
         } else if (skill.type === 'buff') {
-          const shieldAmt = Math.round(14 + eff.def * 0.9);
-          const smallHeal = 6;
-          updatedPlayer.shield = (updatedPlayer.shield || 0) + shieldAmt;
-          updatedPlayer.hp = Math.min(eff.maxHp, updatedPlayer.hp + smallHeal);
-          updatedPlayer.buffs = [
-            ...updatedPlayer.buffs.filter((b) => b.type !== 'shield'),
-            {
-              type: 'shield',
-              duration: skill.effect.duration,
-              defBonus: skill.effect.defBonus,
-            },
-          ];
-          turnLogs.push(
-            `🛡️ ${skill.name}: +${shieldAmt} de Escudo, +${skill.effect.defBonus} DEF por ${skill.effect.duration} turnos!`
-          );
+          if (skill.effect?.type === 'atk_buff') {
+            // Buff ofensivo (ex: Martelo Divino)
+            const heal = 10;
+            updatedPlayer.hp = Math.min(eff.maxHp, updatedPlayer.hp + heal);
+            updatedPlayer.buffs = [
+              ...updatedPlayer.buffs.filter((b) => b.type !== 'atk_buff'),
+              {
+                type: 'atk_buff',
+                duration: skill.effect.duration,
+                atkBonus: skill.effect.atkBonus,
+              },
+            ];
+            turnLogs.push(
+              `⚡ ${skill.name}: Aumentou o dano da arma em +${skill.effect.atkBonus} por ${skill.effect.duration} turnos e curou +${heal} HP!`
+            );
+          } else {
+            // Buff defensivo / Escudo
+            const shieldAmt = Math.round(14 + eff.def * 0.9);
+            const smallHeal = 6;
+            updatedPlayer.shield = (updatedPlayer.shield || 0) + shieldAmt;
+            updatedPlayer.hp = Math.min(eff.maxHp, updatedPlayer.hp + smallHeal);
+            updatedPlayer.buffs = [
+              ...updatedPlayer.buffs.filter((b) => b.type !== 'shield'),
+              {
+                type: 'shield',
+                duration: skill.effect.duration,
+                defBonus: skill.effect.defBonus,
+              },
+            ];
+            turnLogs.push(
+              `🛡️ ${skill.name}: +${shieldAmt} de Escudo, +${skill.effect.defBonus} DEF por ${skill.effect.duration} turnos!`
+            );
+          }
         } else {
           // Habilidade ofensiva
           const scalingStat = skill.scaling || player.weapon?.scalingStat || 'str';

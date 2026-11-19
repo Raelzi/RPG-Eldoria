@@ -47,11 +47,14 @@ export default function CharacterCreation() {
     STARTING_WEAPONS.find((w) => w.id === selectedWeaponId) ||
     STARTING_WEAPONS[0];
 
-  // Habilidades disponíveis para a classe selecionada
-  // Se for Ladino e a arma NÃO for arco, exibe Tiro Certo como bloqueada ou com aviso
+  // Armas disponíveis para a classe selecionada (2 armas por classe)
+  const availableWeapons = STARTING_WEAPONS.filter(
+    (w) => w.classId === selectedClassId
+  );
+
+  // Habilidades de combate da classe
   const availableSkills = SKILLS.filter((sk) => {
-    if (sk.classId !== selectedClassId) return false;
-    return true;
+    return sk.classId === selectedClassId;
   });
 
   const handleSelectClass = (cls) => {
@@ -63,19 +66,12 @@ export default function CharacterCreation() {
 
   const handleSelectWeapon = (weaponId) => {
     setSelectedWeaponId(weaponId);
-    // Se for Ladino e trocar para o Arco, verifica se a habilidade atual é melee
-    if (selectedClassId === 'rogue') {
-      if (weaponId === 'longbow') {
-        const currentSkill = SKILLS.find((s) => s.id === selectedSkills[0]);
-        if (currentSkill?.requiresWeaponType === 'melee') {
-          setSelectedSkills(['sure_shot']);
-        }
-      } else {
-        const currentSkill = SKILLS.find((s) => s.id === selectedSkills[0]);
-        if (currentSkill?.requiresWeapon === 'longbow') {
-          setSelectedSkills(['crit_slash']);
-        }
-      }
+    // Seleciona a primeira habilidade compatível com a arma escolhida
+    const compatibleSkill = SKILLS.find(
+      (s) => s.classId === selectedClassId && s.requiresWeapon === weaponId
+    );
+    if (compatibleSkill) {
+      setSelectedSkills([compatibleSkill.id]);
     }
   };
 
@@ -83,9 +79,6 @@ export default function CharacterCreation() {
     const targetSkill = SKILLS.find((s) => s.id === skillId);
     // Não permite selecionar se estiver bloqueada para a arma atual
     if (targetSkill?.requiresWeapon && selectedWeaponId !== targetSkill.requiresWeapon) {
-      return;
-    }
-    if (targetSkill?.requiresWeaponType === 'melee' && selectedWeaponId === 'longbow') {
       return;
     }
     setSelectedSkills([skillId]);
@@ -227,12 +220,12 @@ export default function CharacterCreation() {
                 3. Arma Inicial
               </h2>
               <span className="text-[11px] text-stone-400">
-                Escalona o ataque básico
+                2 armas disponíveis para {currentClass.name}
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {STARTING_WEAPONS.map((wpn) => {
+              {availableWeapons.map((wpn) => {
                 const isSelected = wpn.id === selectedWeaponId;
                 const isRec = wpn.id === currentClass.recommendedWeapon;
                 const scaleLabels = {
@@ -248,7 +241,7 @@ export default function CharacterCreation() {
                     onClick={() => handleSelectWeapon(wpn.id)}
                     className={`text-left p-3 sm:p-3.5 rounded-xl border transition-all active:scale-[0.99] ${
                       isSelected
-                        ? 'bg-amber-500/10 border-amber-500'
+                        ? 'bg-amber-500/10 border-amber-500 shadow-md shadow-amber-950/20'
                         : 'bg-stone-950/60 border-stone-800 hover:border-stone-600'
                     }`}
                   >
@@ -258,7 +251,7 @@ export default function CharacterCreation() {
                       </span>
                       {isRec && (
                         <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                          Ideal
+                          Padrão
                         </span>
                       )}
                     </div>
@@ -296,58 +289,49 @@ export default function CharacterCreation() {
                 4. Habilidade Inicial
               </h2>
               <span className="text-[11px] text-stone-400">
-                Selecione 1 técnica para começar sua jornada
+                Habilidades vinculadas à sua arma
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {availableSkills.map((sk) => {
                 const isSelected = selectedSkills.includes(sk.id);
-                // Bloqueado se:
-                // 1) Requer arco e a arma NÃO é arco
-                // 2) Requer corpo a corpo (adagas) e a arma É arco
-                const isBowRequiredBlocked = Boolean(sk.requiresWeapon && selectedWeaponId !== sk.requiresWeapon);
-                const isMeleeRequiredBlocked = Boolean(sk.requiresWeaponType === 'melee' && selectedWeaponId === 'longbow');
-                const isDisabled = isBowRequiredBlocked || isMeleeRequiredBlocked;
+                const reqWeapon = STARTING_WEAPONS.find((w) => w.id === sk.requiresWeapon);
+                const isWeaponBlocked = Boolean(sk.requiresWeapon && selectedWeaponId !== sk.requiresWeapon);
 
                 return (
                   <button
                     key={sk.id}
                     type="button"
-                    disabled={isDisabled}
+                    disabled={isWeaponBlocked}
                     onClick={() => toggleSkill(sk.id)}
                     className={`text-left p-3 sm:p-3.5 rounded-xl border transition-all ${
-                      isDisabled
-                        ? 'opacity-40 cursor-not-allowed bg-stone-950/40 border-stone-900 text-stone-500'
+                      isWeaponBlocked
+                        ? 'opacity-35 cursor-not-allowed bg-stone-950/40 border-stone-900 text-stone-500'
                         : isSelected
-                        ? 'bg-purple-500/15 border-purple-400 active:scale-[0.99]'
+                        ? 'bg-purple-500/15 border-purple-400 active:scale-[0.99] shadow-md shadow-purple-950/20'
                         : 'bg-stone-950/60 border-stone-800 hover:border-stone-600 active:scale-[0.99]'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className={`font-semibold text-sm flex items-center gap-1.5 ${isDisabled ? 'text-stone-500' : 'text-stone-100'}`}>
-                        <Zap className={`w-3.5 h-3.5 ${isDisabled ? 'text-stone-600' : 'text-purple-400'}`} />
+                      <span className={`font-semibold text-sm flex items-center gap-1.5 ${isWeaponBlocked ? 'text-stone-500' : 'text-stone-100'}`}>
+                        <Zap className={`w-3.5 h-3.5 ${isWeaponBlocked ? 'text-stone-600' : 'text-purple-400'}`} />
                         {sk.name}
                       </span>
                       <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${
-                        isDisabled
+                        isWeaponBlocked
                           ? 'bg-stone-900 border-stone-800 text-stone-600'
                           : 'bg-blue-500/15 text-blue-300 border-blue-500/20'
                       }`}>
                         {sk.cost} MP
                       </span>
                     </div>
-                    <p className={`text-xs mt-1 leading-relaxed ${isDisabled ? 'text-stone-600' : 'text-stone-400'}`}>
+                    <p className={`text-xs mt-1 leading-relaxed ${isWeaponBlocked ? 'text-stone-600' : 'text-stone-400'}`}>
                       {sk.description}
                     </p>
-                    {isBowRequiredBlocked && (
+                    {isWeaponBlocked && (
                       <div className="mt-1.5 text-[10px] font-semibold text-amber-500/80 uppercase tracking-wider">
-                        🔒 Indisponível (Requer Arco de Madeira)
-                      </div>
-                    )}
-                    {isMeleeRequiredBlocked && (
-                      <div className="mt-1.5 text-[10px] font-semibold text-amber-500/80 uppercase tracking-wider">
-                        🔒 Indisponível com Arco (Requer Adagas)
+                        🔒 Requer {reqWeapon?.name || 'outra arma'}
                       </div>
                     )}
                   </button>
